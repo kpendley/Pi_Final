@@ -1,6 +1,9 @@
 #!/bin/python
 
-from gpiozero import LED, PingServer, Button, PWMLED
+from gpiozero import LED
+from gpiozero import PingServer
+from gpiozero import Button
+from gpiozero import PWMLED
 from gpiozero.tools import negated
 from time import sleep
 
@@ -21,7 +24,7 @@ while True:
         sleep(.2)
         yellow.value = 1 # full brightness
 
-        button.when_pressed(26)
+        button.wait_for_press()
         yellow.value = 0 # off
         print("Connection inquired")
 
