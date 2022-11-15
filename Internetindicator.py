@@ -1,10 +1,9 @@
 #!/bin/python
 
 from gpiozero import LED
-from gpiozero import PingServer
+from icmplib  import ping
 from gpiozero import Button
 from gpiozero import PWMLED
-from gpiozero.tools import negated
 from time import sleep
 
 button = Button(26)
@@ -12,24 +11,33 @@ button = Button(26)
 clear = LED(2)
 green = LED(3)
 yellow = PWMLED(4)
-red = LED(17)
+red = LED(27)
 
+
+# host = ping('8.8.8.8')
 
 while True:
-        clear.value = 1 # full brightness
-
-        yellow.value = 0 # off
-        sleep(.2)
-        yellow.value = 0.5 # half brightness
-        sleep(.2)
-        yellow.value = 1 # full brightness
-
+        clear.on()
+        green.off()
+        yellow.on()
         button.wait_for_press()
-        yellow.value = 0 # off
         print("Connection inquired")
-
-        google = PingServer('google.com')
-
-        google.when_activated = green.on
-        google.when_deactivated = green.off
-        red.source = negated(green)
+        host = ping('8.8.8.8')
+        print (host)
+        print (host.packets_received)
+        if host.packets_received >3:
+                yellow.off()
+                green.on()
+                sleep(5)
+        else:
+                yellow.off()
+                red.on()
+                sleep(5)
+        if host.packet_loss >1:
+                yellow.value = 1
+                sleep(0.2)
+                yellow.value = 0
+                sleep(0.2)
+                yellow.value = 1
+                sleep(0.2)
+                yellow.value = 0
